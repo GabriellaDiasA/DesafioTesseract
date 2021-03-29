@@ -7,18 +7,25 @@ import Footer from './components/Footer.js';
 // Mobile-first
 function App() {
 
-	const [members, setMembers] = useState([]);
+	const [input, setInput] = useState('');
 	const [repos, setRepos] = useState([]);
 	const [followers, setFollowers] = useState([]);
 	const [createDate, setCreated] = useState([]);
+	const [isLoading, setLoading] = useState(true);
+
+	// Duas listas, uma constante e outra para exibição pós-filtro
+	const [members, setMembers] = useState([]);
+	const [membersDefault, setMembersDefault] = useState([]);
 
 	useEffect(() => {
+		setLoading(true);
 		async function fetchData(){
 			//Fetch inicial
 			const response = await fetch(`https://api.github.com/orgs/grupotesseract/public_members`)
 			.catch(error => {console.log(error)});
 			let data = await response.json();
 			setMembers(data);
+			setMembersDefault(data);
 
 			//Fetch repositórios
 			let reposTemp = [];
@@ -54,26 +61,43 @@ function App() {
 				let newCreate = { id: data[member].id, created_at: created_at };
 				createTemp = [...createTemp, newCreate];
 			}
-			setCreated(createTemp)
+			setCreated(createTemp);
+
+			setLoading(false);
 		}
 		fetchData();
 	}, []);
 
 	const toggleSelection = (id) => {
-		console.log(members[0]);
 		setMembers(members.map((member) => member.id === id ? { ...member, selected: !member.selected } : member));
 	};
+
+	// Lista membersDefault permanece constante
+	const updateInput = async (input) => {
+		const filtered = membersDefault.filter(member => {
+			return member.login.toLowerCase().includes(input.toLowerCase())
+		})
+			setInput(input);
+			setMembers(filtered);
+	}
 
   	return (
 		<div
 			className="container">
-			<Header title="Desafio Tesseract"/>
+			<Header
+				title="Desafio Tesseract"
+				input={input}
+				onChange={updateInput} />
+			{ !isLoading ? (
 			<Tesseract
 				onToggle={toggleSelection}
 				members={members}
 				repos={repos}
 				followers={followers}
-				date={createDate}/>
+				date={createDate} />
+			) : (
+				"Loading..."
+			)}
 			<Footer />
 		</div>
   	);
