@@ -1,25 +1,38 @@
-import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
+import Header from './components/Header.js';
+import Tesseract from './components/Tesseract.js';
+import Footer from './components/Footer.js';
 
+// Mobile-first
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+	const [members, setMembers] = useState([]);
+
+	useEffect(() => {
+		async function fetchData(){
+			const response = await fetch(`https://api.github.com/orgs/grupotesseract/public_members`)
+			.catch(error => {console.log(error)});
+			const data = await response.json();
+			setMembers(data);
+		}
+		fetchData();
+	}, []);
+
+	const toggleSelection = (id) => {
+		setMembers(members.map((member) => member.id === id ? { ...member, selected: !member.selected } : member));
+	};
+
+  	return (
+		<div
+			className="container">
+			<Header title="Desafio Tesseract"/>
+			<Tesseract
+				onToggle={toggleSelection}
+				members={members}/>
+			<Footer />
+		</div>
+  	);
 }
 
 export default App;
