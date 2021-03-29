@@ -1,6 +1,6 @@
 import Member from './Member.js';
 
-const Tesseract = ({members, onToggle}) => {
+const Tesseract = ({members, onToggle, repos, followers, date}) => {
     return (
         <div
             className="tesseract">
@@ -9,7 +9,10 @@ const Tesseract = ({members, onToggle}) => {
                 <Member
                     key={member.id}
                     onToggle={onToggle}
-                    member={member} />
+                    member={member}
+                    repos={repos.filter((rep) => rep.id === member.id)}
+				    followers={followers.filter((fol) => fol.id === member.id)}
+                    date={date.filter((dat) => dat.id === member.id)} />
             )}
         </div>
     );
