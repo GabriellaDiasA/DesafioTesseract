@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import FilterBar from './FilterBar.js';
 
-const Header = ({title}) => {
+const Header = ({title, onChange}) => {
     return (
         <header>
             <h1>{title}</h1>
-            <FilterBar />
+            <FilterBar
+                setKeyword={onChange}
+                keyword="random1" />
         </header>
     )
 }
