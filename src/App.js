@@ -17,6 +17,7 @@ function App() {
 	const [members, setMembers] = useState([]);
 	const [membersDefault, setMembersDefault] = useState([]);
 
+	// Todos as operações FETCH estão aqui
 	useEffect(() => {
 		setLoading(true);
 		async function fetchData(){
